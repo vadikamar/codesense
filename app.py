@@ -58,10 +58,9 @@ def analyze_variable_names(code):
     bad_variable_percentage = (len(bad_variable_names) / total_variables) * 100
     return bad_variable_percentage
 
-def analyze_code(file_path):
+def analyze_code(file_path,file_name):
     try:
-        with open(file_path, 'r') as file:
-            code = file.read()
+        code = file_path.decode('utf-8')
 
         # Calculate Cyclomatic Complexity
         complexity = radon_cc.cc_visit(code)
@@ -78,7 +77,7 @@ def analyze_code(file_path):
 
         # Construct analysis results list
         analysis_result = []
-        analysis_result.append(f"Code analysis results for file '{file_path}':\n")
+        analysis_result.append(f"Code analysis results for file '{file_name}':\n")
         analysis_result.append(f"Cyclomatic Complexity: {total_complexity}\n")
         analysis_result.append(f"Code Rating: {score[0]}/10, {score[1]}\n")
         analysis_result.append(f"Comment Percentage: {comment_percentage:.2f}%\n")
@@ -116,9 +115,9 @@ if start_button and uploaded_file:
     </style>
     """
     # AST Analysis
-    code_result = analyze_code(uploaded_file.name)
+    code_result = analyze_code(uploaded_file.getvalue(),uploaded_file.name)
     st.subheader("Code Analysis Result:")
-    if len(code_result) == 0:
+    if not (code_result):
         st.error(code_result)
     else:
         for line in code_result:
