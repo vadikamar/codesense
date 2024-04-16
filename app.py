@@ -1,13 +1,13 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import ast
 from collections import Counter
 import radon.complexity as radon_cc
 from wordcloud import WordCloud
 import seaborn as sns
 import re
-import plotly.express as px
 
 def analyze_ast(file_content):
     try:
@@ -102,6 +102,19 @@ with st.sidebar:
 st.title("Code Analyzer")
 
 if start_button and uploaded_file:
+    custom_css = """
+    <style>
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .stat {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    </style>
+    """
     # AST Analysis
     code_result = analyze_code(uploaded_file.name)
     st.subheader("Code Analysis Result:")
@@ -120,6 +133,7 @@ if start_button and uploaded_file:
         node_types, counts = zip(*ast_result)
         
         # Create a bar chart
+        
         ast_df = pd.DataFrame(ast_result, columns=['Node Type', 'Count'])
 
         # Display DataFrame with progress graph
@@ -142,12 +156,24 @@ if start_button and uploaded_file:
         # Word cloud
         wordcloud_data = {node_type: count for node_type, count in ast_result}
         wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(wordcloud_data)
-        st.image(wordcloud.to_array(), use_column_width=True)
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+
+        # Display the word cloud using st.image()
+        st.image(wordcloud.to_array())
+
+        ast_df = pd.DataFrame(ast_result, columns=['Node Type', 'Count'])
 
         # Sort DataFrame by node count in descending order
         ast_df = ast_df.sort_values(by='Count', ascending=False)
 
-        # Create a heatmap using Plotly
-        fig = px.imshow(ast_df.set_index('Node Type'), color_continuous_scale='YlGnBu')
-        fig.update_layout(title='AST Node Type Heatmap', xaxis_title='Count', yaxis_title='Node Type')
-        st.plotly_chart(fig)
+        # Create a heatmap using Seaborn
+        plt.figure(figsize=(10, 6))
+        sns.heatmap(data=ast_df.set_index('Node Type'), annot=True, cmap='YlGnBu', fmt='d')
+        plt.title('AST Node Type Heatmap')
+        plt.xlabel('Count')
+        plt.ylabel('Node Type')
+
+        # Display the heatmap using st.pyplot() with the figure object
+        st.pyplot(plt.gcf())
