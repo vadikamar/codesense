@@ -3,7 +3,6 @@ pandas
 altair
 plotly
 numpy
-wordcloud
-radon.complexity
-wordcloud
 seaborn
+radon[toml]
+wordcloud
