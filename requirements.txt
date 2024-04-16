@@ -6,7 +6,7 @@ numpy
 ast
 collections
 wordcloud
-radon
+radon.complexity
 wordcloud
 seaborn
 re
