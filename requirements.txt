@@ -1,0 +1,12 @@
+streamlit
+pandas
+altair
+plotly
+numpy
+ast
+collections
+wordcloud
+radon
+wordcloud
+seaborn
+re
