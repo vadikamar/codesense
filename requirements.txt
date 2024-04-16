@@ -3,10 +3,7 @@ pandas
 altair
 plotly
 numpy
-ast
-collections
 wordcloud
 radon.complexity
 wordcloud
 seaborn
-re
